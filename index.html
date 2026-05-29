@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Configuration pour masquer Safari et lancer en plein écran App -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Portail d'Évaluation — Institut Emmanuel d'Alzon</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            --navy: #0A2D5A;
+            --navy-hover: #144178;
+            --blue-card: #3B82F6;
+            --green-card: #28A54B;
+            --green-ring: #46B964;
+            --gray-bg: #FCFDFE;
+            --gray-dots: #E6EBF0;
+            --text-gray: #64748B;
+            --red-alert: #DC2626;
+            --red-hover: #F03C3C;
+            --orange-fault: #F59E0B;
+            --orange-hover: #FBBD24;
+            --white: #FFFFFF;
+            --black: #000000;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-bg);
+            background-image: radial-gradient(var(--gray-dots) 2px, transparent 2px);
+            background-size: 30px 30px;
+            color: var(--navy);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            -webkit-user-select: none;
+        }
+
+        header {
+            background-color: var(--white);
+            height: 10vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 2px solid var(--gray-dots);
+        }
+
+        header h1 { font-size: 18px; font-weight: 700; }
+        .header-right { font-size: 12px; color: var(--text-gray); font-style: italic; }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .scene { display: none; flex-direction: column; align-items: center; width: 100%; height: 100%; justify-content: center; }
+        .scene.active { display: flex; }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 { font-size: 24px; font-weight: 700; margin-bottom: 15px; text-align: center; width: 100%; }
+        h3 { font-size: 16px; color: var(--text-gray); font-weight: 400; }
+
+        .btn {
+            background-color: var(--navy);
+            color: var(--white);
+            border: none;
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(10, 45, 90, 0.2);
+            margin-top: 20px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        /* --- DESIGN DU RAPPORT FINAL CENTRÉ TYPE IPHONE --- */
+        .result-layout {
+            background-color: var(--white);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 450px;
+            gap: 15px;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background-color: var(--black);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
+        .result-score { font-size: 70px; font-weight: 700; color: var(--navy); line-height: 1; }
+        .verdict-text { font-size: 18px; font-weight: 700; color: var(--navy); margin-top: 5px; }
+
+        /* --- WAVEFORM --- */
+        .waveform-container {
+            width: 100%;
+            max-width: 400px;
+            height: 150px;
+            background-color: var(--white);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .mic-icon { font-size: 40px; position: absolute; z-index: 2; }
+        .waveform { display: flex; align-items: center; gap: 4px; height: 100%; width: 85%; z-index: 1; }
+        .bar { flex: 1; background-color: var(--blue-card); height: 8px; border-radius: 2px; transition: height 0.05s ease-out; }
+
+        /* --- CHRONO / ACTIONS --- */
+        .equip-card {
+            background-color: var(--blue-card); color: var(--white);
+            width: 240px; height: 240px; border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.3);
+        }
+        .equip-card.urgent { background-color: var(--red-alert); box-shadow: 0 15px 40px rgba(220, 38, 38, 0.3); }
+        .equip-card.validated { background-color: var(--green-card); box-shadow: 0 15px 40px rgba(40, 165, 75, 0.3); }
+        .timer-display { font-size: 60px; font-weight: 700; }
+
+        .tp-grid { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 400px; }
+        .tp-grid .card { padding: 20px; }
+        .tp-grid .timer-display { font-size: 45px; color: var(--navy); }
+        .chrono-box { background-color: var(--blue-card); color: var(--white) !important; }
+        .chrono-box.urgent { background-color: var(--red-alert); }
+        .chrono-box .timer-display { color: var(--white); }
+
+        .action-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; max-width: 400px; margin-top: 15px; }
+        .btn-action { margin-top: 0; padding: 14px; font-size: 16px; border-radius: 14px; width: 100%; max-width: none; transform: none; position: static; }
+        .btn-add { background-color: var(--green-card); }
+        .btn-help { background-color: var(--red-alert); }
+        .btn-fault { background-color: var(--orange-fault); }
+        .btn-undo { background-color: var(--gray-dots); color: var(--navy); padding: 8px; font-size: 12px; border-radius: 8px; width: 100px; margin: 10px auto 0 auto; box-shadow: none; position: static; }
+
+        footer { height: 5vh; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-gray); border-top: 1px solid var(--gray-dots); background-color: var(--white); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>PORTAIL D'ÉVALUATION</h1>
+        <div class="header-right">« Élever, Relever »</div>
+    </header>
+
+    <main>
+        <!-- S0: ACCUEIL -->
+        <div class="scene active" id="s0">
+            <div class="card">
+                <h3>Chimie 3ème G</h3>
+                <h2 style="font-size:32px; margin:10px 0;">BIENVENUE</h2>
+                <h3>Salle 204</h3>
+            </div>
+            <button class="btn" onclick="changeScene('s1')">DÉMARRER</button>
+        </div>
+
+        <!-- S1: AUDIO 1 -->
+        <div class="scene" id="s1">
+            <h2>MODULE PRÉPARATOIRE</h2>
+            <div class="waveform-container">
+                <div class="mic-icon">🎙️</div>
+                <div class="waveform" id="wf1"></div>
+            </div>
+            <button class="btn" onclick="changeScene('s2')">PASSER L'ÉCOUTE</button>
+        </div>
+
+        <!-- S2: ÉQUIPEMENT -->
+        <div class="scene" id="s2">
+            <h2>ÉQUIPEMENT EPI</h2>
+            <div class="equip-card" id="equipCard">
+                <div class="timer-display" id="t45">45</div>
+                <h3 id="t45Label" style="color:white; font-size:14px;">sec. restant</h3>
+            </div>
+            <button class="btn" id="btnEquip" onclick="validateEquip()">VALIDER</button>
+        </div>
+
+        <!-- S3: AUDIO 2 -->
+        <div class="scene" id="s3">
+            <h2>CONSIGNES DU TP</h2>
+            <div class="waveform-container">
+                <div class="mic-icon">🎙️</div>
+                <div class="waveform" id="wf2"></div>
+            </div>
+            <button class="btn" onclick="changeScene('s4')">DÉMARRER LE TP</button>
+        </div>
+
+        <!-- S4: TP EN COURS -->
+        <div class="scene" id="s4">
+            <div class="tp-grid">
+                <div class="card chrono-box" id="tpCard">
+                    <div class="timer-display" id="t5">5:00</div>
+                    <div class="timer-label" style="font-size:12px;">CHRONOMÈTRE</div>
+                </div>
+                <div class="card">
+                    <div class="timer-display" id="bottleCount">0</div>
+                    <div class="timer-label" style="font-size:12px;">BOMBES EXPLOSÉES <span id="penaltyDisplay" style="color:var(--red-alert); font-weight:700;"></span></div>
+                </div>
+            </div>
+            <div class="action-grid">
+                <button class="btn btn-action btn-add" onclick="addBottle()">VALIDER EXPLOSION</button>
+                <button class="btn btn-action btn-help" onclick="applyPenalty(20, 'AIDE')">AIDE (-20s)</button>
+                <button class="btn btn-action btn-fault" onclick="applyPenalty(15, 'FAUTE GRAVE')">FAUTE GRAVE (-15s)</button>
+                <button class="btn btn-undo" id="btnUndo" style="display:none;" onclick="undo()">↩ Annuler</button>
+            </div>
+        </div>
+
+        <!-- S5: RÉSULTAT CENTRÉ VERTICAL AVEC VIDÉO EN HAUT -->
+        <div class="scene" id="s5">
+            <div class="result-layout">
+                <div class="video-wrapper">
+                    <video id="finalVideo" src="Danse-Statut.mp4" preload="auto" playsinline loop></video>
+                </div>
+                <div style="text-align:center;">
+                    <div class="result-score" id="finalBottles">0</div>
+                    <h3 style="font-size:14px; text-transform:uppercase; letter-spacing:1px;">Explosions validées</h3>
+                    <div class="verdict-text" id="verdict">0/20. Très Insuffisant</div>
+                </div>
+            </div>
+            <button class="btn" onclick="changeScene('s0')">RECOMENCER</button>
+        </div>
+    </main>
+
+    <footer>© 2010 Institut d'Alzon</footer>
+
+    <script>
+        const TPS_EQUIPEMENT = 45; const TPS_TP = 300; const NB_BARRES_WF = 30;
+        let currentScene = 's0'; let bouteilles = 0; let penalitesTps = 0; let tempsRestant = 0;
+        let chronoInterval = null; let equipValide = false; let tempsMisEquip = 0; let historique = []; let wfInterval = null;
+
+        // Audios natifs HTML5 (recherche les fichiers du dossier)
+        const a1 = new Audio('audio1.mp3'); const a2 = new Audio('audio2.mp3');
+        const s_bip = new Audio('bip.wav'); const s_err = new Audio('erreur.wav'); const s_tic = new Audio('tic_tac.wav'); s_tic.loop = true;
+
+        function initWaveform(id) {
+            const container = document.getElementById(id); container.innerHTML = '';
+            for(let i=0; i<NB_BARRES_WF; i++) {
+                const bar = document.createElement('div'); bar.className = 'bar';
+                const env = Math.pow(Math.sin((i / (NB_BARRES_WF - 1)) * Math.PI), 1.4);
+                bar.dataset.envelope = env; container.appendChild(bar);
+            }
+        }
+
+        function animateWaveform(id, active) {
+            clearInterval(wfInterval); if(!active) return;
+            const bars = document.getElementById(id).querySelectorAll('.bar');
+            wfInterval = setInterval(() => {
+                const t = Date.now() * 0.005;
+                bars.forEach((bar, i) => {
+                    const env = parseFloat(bar.dataset.envelope);
+                    const raw = (Math.sin(t + i * 0.4) + Math.sin(t * 1.5 + i * 0.2) * 0.35) * (Math.sin(t * 0.2) * 0.5 + 0.5);
+                    bar.style.height = `${Math.max(5, Math.min(100, ((raw + 1.35) / 2.7) * 100)) * env}%`;
+                });
+            }, 50);
+        }
+
+        function changeScene(newScene) {
+            clearInterval(chronoInterval); animateWaveform('wf1', false); animateWaveform('wf2', false);
+            a1.pause(); a1.currentTime = 0; a2.pause(); a2.currentTime = 0; s_tic.pause();
+            const video = document.getElementById('finalVideo'); video.pause(); video.currentTime = 0;
+            
+            document.getElementById(currentScene).classList.remove('active');
+            document.getElementById(newScene).classList.add('active');
+            currentScene = newScene;
+
+            if (newScene === 's0') resetAll();
+            else if (newScene === 's1') { initWaveform('wf1'); animateWaveform('wf1', true); a1.play(); }
+            else if (newScene === 's2') startEquipChrono();
+            else if (newScene === 's3') { initWaveform('wf2'); animateWaveform('wf2', true); a2.play(); }
+            else if (newScene === 's4') startTPChrono();
+            else if (newScene === 's5') { showResults(); video.play().catch(()=>{}); }
+        }
+
+        function resetAll() {
+            bouteilles = 0; penalitesTps = 0; equipValide = false; tempsMisEquip = 0; historique = [];
+            document.getElementById('tpCard').classList.remove('urgent');
+            document.getElementById('equipCard').classList.remove('urgent', 'validated');
+            document.getElementById('btnUndo').style.display = 'none';
+        }
+
+        function startEquipChrono() {
+            tempsRestant = TPS_EQUIPEMENT; updateEquipUI(); s_tic.play();
+            chronoInterval = setInterval(() => {
+                tempsRestant--;
+                if(tempsRestant <= 10) document.getElementById('equipCard').classList.add('urgent');
+                if (tempsRestant <= 0) { tempsRestant = 0; clearInterval(chronoInterval); s_tic.pause(); s_err.play(); }
+                updateEquipUI();
+            }, 1000);
+        }
+        function updateEquipUI() { document.getElementById('t45').innerText = tempsRestant; }
+
+        function validateEquip() {
+            if(equipValide) return; clearInterval(chronoInterval); s_tic.pause(); equipValide = true;
+            tempsMisEquip = TPS_EQUIPEMENT - tempsRestant; s_bip.play();
+            document.getElementById('equipCard').className = 'equip-card validated';
+            document.getElementById('t45').innerText = tempsMisEquip;
+            document.getElementById('t45Label').innerText = "sec. validé";
+            document.getElementById('btnEquip').innerText = "SUIVANT";
+            document.getElementById('btnEquip').onclick = () => changeScene('s3');
+        }
+
+        function startTPChrono() {
+            tempsRestant = TPS_TP; updateTPChronoUI(); updateScoreUI(); s_tic.play();
+            chronoInterval = setInterval(() => {
+                tempsRestant--;
+                if(tempsRestant <= 30) document.getElementById('tpCard').classList.add('urgent');
+                if (tempsRestant <= 0) { tempsRestant = 0; clearInterval(chronoInterval); changeScene('s5'); }
+                updateTPChronoUI();
+            }, 1000);
+        }
+
+        function updateTPChronoUI() {
+            const min = Math.floor(tempsRestant / 60); const sec = tempsRestant % 60;
+            document.getElementById('t5').innerText = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        function updateScoreUI() {
+            document.getElementById('bottleCount').innerText = bouteilles;
+            document.getElementById('penaltyDisplay').innerText = penalitesTps > 0 ? ` (-${penalitesTps}s)` : '';
+            document.getElementById('btnUndo').style.display = historique.length > 0 ? 'block' : 'none';
+        }
+
+        function addBottle() { bouteilles++; historique.push('BOMBE'); s_bip.play(); updateScoreUI(); }
+        function applyPenalty(sec, type) { tempsRestant = Math.max(0, tempsRestant - sec); penalitesTps += sec; historique.push(type); s_err.play(); updateTPChronoUI(); updateScoreUI(); }
+
+        function undo() {
+            if (!historique.length) return; const action = historique.pop();
+            if (action === 'BOMBE') bouteilles = Math.max(0, bouteilles - 1);
+            else if (action === 'AIDE') { tempsRestant += 20; penalitesTps -= 20; }
+            else if (action === 'FAUTE GRAVE') { tempsRestant += 15; penalitesTps -= 15; }
+            updateTPChronoUI(); updateScoreUI();
+        }
+
+        function showResults() {
+            document.getElementById('finalBottles').innerText = bouteilles;
+            let v = ""; let p = penalitesTps > 0 ? ` (-${penalitesTps}s)` : "";
+            if (bouteilles == 0) v = `0/20. Très Insuffisant.${p}`;
+            else if (bouteilles <= 2) v = `6/20. Non acquis.${p}`;
+            else if (bouteilles <= 5) v = `11/20. En cours.${p}`;
+            else if (bouteilles <= 7) v = `16/20. Satisfaisant.${p}`;
+            else v = `20/20. Excellence.${p}`;
+            document.getElementById('verdict').innerText = v;
+        }
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>
