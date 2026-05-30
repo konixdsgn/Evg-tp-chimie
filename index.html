@@ -52,15 +52,35 @@
             border-bottom: 2px solid var(--gray-dots);
         }
 
-        header h1 { font-size: 18px; font-weight: 700; }
-        .header-right { font-size: 12px; color: var(--text-gray); font-style: italic; }
+        header .logo-container {
+            height: 70%;
+            display: flex;
+            align-items: center;
+        }
+
+        header .logo-container img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        header h1 { font-size: 16px; font-weight: 700; margin-left: 10px; display: none; } /* Caché pour laisser la place au logo sur mobile */
+        
+        @media(min-width: 360px) {
+            header h1 { display: block; font-size: 14px; }
+        }
+        @media(min-width: 400px) {
+            header h1 { font-size: 16px; }
+        }
+
+        .header-right { font-size: 11px; color: var(--text-gray); font-style: italic; text-align: right; line-height: 1.2; }
 
         main {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
             position: relative;
         }
 
@@ -70,15 +90,15 @@
         .card {
             background-color: var(--white);
             border-radius: 24px;
-            padding: 30px;
+            padding: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             text-align: center;
             width: 100%;
             max-width: 400px;
         }
 
-        h2 { font-size: 24px; font-weight: 700; margin-bottom: 15px; text-align: center; width: 100%; }
-        h3 { font-size: 16px; color: var(--text-gray); font-weight: 400; }
+        h2 { font-size: 22px; font-weight: 700; margin-bottom: 12px; text-align: center; width: 100%; }
+        h3 { font-size: 15px; color: var(--text-gray); font-weight: 400; }
 
         .btn {
             background-color: var(--navy);
@@ -119,14 +139,14 @@
         }
 
         .video-wrapper video { width: 100%; height: 100%; object-fit: cover; }
-        .result-score { font-size: 70px; font-weight: 700; color: var(--navy); line-height: 1; }
-        .verdict-text { font-size: 18px; font-weight: 700; color: var(--navy); margin-top: 5px; }
+        .result-score { font-size: 65px; font-weight: 700; color: var(--navy); line-height: 1; }
+        .verdict-text { font-size: 17px; font-weight: 700; color: var(--navy); margin-top: 5px; text-align: center; }
 
         /* --- WAVEFORM --- */
         .waveform-container {
             width: 100%;
             max-width: 400px;
-            height: 150px;
+            height: 140px;
             background-color: var(--white);
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
@@ -135,34 +155,34 @@
             justify-content: center;
             position: relative;
         }
-        .mic-icon { font-size: 40px; position: absolute; z-index: 2; }
+        .mic-icon { font-size: 35px; position: absolute; z-index: 2; }
         .waveform { display: flex; align-items: center; gap: 4px; height: 100%; width: 85%; z-index: 1; }
         .bar { flex: 1; background-color: var(--blue-card); height: 8px; border-radius: 2px; transition: height 0.05s ease-out; }
 
         /* --- CHRONO / ACTIONS --- */
         .equip-card {
             background-color: var(--blue-card); color: var(--white);
-            width: 240px; height: 240px; border-radius: 50%;
+            width: 220px; height: 220px; border-radius: 50%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 0 15px 40px rgba(59, 130, 246, 0.3);
         }
         .equip-card.urgent { background-color: var(--red-alert); box-shadow: 0 15px 40px rgba(220, 38, 38, 0.3); }
         .equip-card.validated { background-color: var(--green-card); box-shadow: 0 15px 40px rgba(40, 165, 75, 0.3); }
-        .timer-display { font-size: 60px; font-weight: 700; }
+        .timer-display { font-size: 55px; font-weight: 700; }
 
-        .tp-grid { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 400px; }
-        .tp-grid .card { padding: 20px; }
-        .tp-grid .timer-display { font-size: 45px; color: var(--navy); }
+        .tp-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 400px; }
+        .tp-grid .card { padding: 15px; }
+        .tp-grid .timer-display { font-size: 40px; color: var(--navy); }
         .chrono-box { background-color: var(--blue-card); color: var(--white) !important; }
         .chrono-box.urgent { background-color: var(--red-alert); }
         .chrono-box .timer-display { color: var(--white); }
 
-        .action-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; max-width: 400px; margin-top: 15px; }
-        .btn-action { margin-top: 0; padding: 14px; font-size: 16px; border-radius: 14px; width: 100%; max-width: none; transform: none; position: static; }
+        .action-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; max-width: 400px; margin-top: 10px; }
+        .btn-action { margin-top: 0; padding: 14px; font-size: 16px; border-radius: 14px; width: 100%; max-width: none; position: static; }
         .btn-add { background-color: var(--green-card); }
         .btn-help { background-color: var(--red-alert); }
         .btn-fault { background-color: var(--orange-fault); }
-        .btn-undo { background-color: var(--gray-dots); color: var(--navy); padding: 8px; font-size: 12px; border-radius: 8px; width: 100px; margin: 10px auto 0 auto; box-shadow: none; position: static; }
+        .btn-undo { background-color: var(--gray-dots); color: var(--navy); padding: 8px; font-size: 12px; border-radius: 8px; width: 100px; margin: 8px auto 0 auto; box-shadow: none; position: static; }
 
         footer { height: 5vh; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-gray); border-top: 1px solid var(--gray-dots); background-color: var(--white); }
     </style>
@@ -170,8 +190,11 @@
 <body>
 
     <header>
+        <div class="logo-container">
+            <img src="LOGO-BLEU-DALZON-SANS-CADRE-72-DPI-300x133.webp" alt="Logo d'Alzon">
+        </div>
         <h1>PORTAIL D'ÉVALUATION</h1>
-        <div class="header-right">« Élever, Relever »</div>
+        <div class="header-right">« Élever,<br>Relever »</div>
     </header>
 
     <main>
@@ -179,7 +202,7 @@
         <div class="scene active" id="s0">
             <div class="card">
                 <h3>Chimie 3ème G</h3>
-                <h2 style="font-size:32px; margin:10px 0;">BIENVENUE</h2>
+                <h2 style="font-size:30px; margin:8px 0;">BIENVENUE</h2>
                 <h3>Salle 204</h3>
             </div>
             <button class="btn" onclick="changeScene('s1')">DÉMARRER</button>
@@ -200,7 +223,7 @@
             <h2>ÉQUIPEMENT EPI</h2>
             <div class="equip-card" id="equipCard">
                 <div class="timer-display" id="t45">45</div>
-                <h3 id="t45Label" style="color:white; font-size:14px;">sec. restant</h3>
+                <h3 id="t45Label" style="color:white; font-size:13px;">sec. restant</h3>
             </div>
             <button class="btn" id="btnEquip" onclick="validateEquip()">VALIDER</button>
         </div>
@@ -220,11 +243,11 @@
             <div class="tp-grid">
                 <div class="card chrono-box" id="tpCard">
                     <div class="timer-display" id="t5">5:00</div>
-                    <div class="timer-label" style="font-size:12px;">CHRONOMÈTRE</div>
+                    <div class="timer-label" style="font-size:11px;">CHRONOMÈTRE</div>
                 </div>
                 <div class="card">
                     <div class="timer-display" id="bottleCount">0</div>
-                    <div class="timer-label" style="font-size:12px;">BOMBES EXPLOSÉES <span id="penaltyDisplay" style="color:var(--red-alert); font-weight:700;"></span></div>
+                    <div class="timer-label" style="font-size:11px;">BOMBES EXPLOSÉES <span id="penaltyDisplay" style="color:var(--red-alert); font-weight:700;"></span></div>
                 </div>
             </div>
             <div class="action-grid">
@@ -243,7 +266,7 @@
                 </div>
                 <div style="text-align:center;">
                     <div class="result-score" id="finalBottles">0</div>
-                    <h3 style="font-size:14px; text-transform:uppercase; letter-spacing:1px;">Explosions validées</h3>
+                    <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:1px;">Explosions validées</h3>
                     <div class="verdict-text" id="verdict">0/20. Très Insuffisant</div>
                 </div>
             </div>
@@ -258,7 +281,7 @@
         let currentScene = 's0'; let bouteilles = 0; let penalitesTps = 0; let tempsRestant = 0;
         let chronoInterval = null; let equipValide = false; let tempsMisEquip = 0; let historique = []; let wfInterval = null;
 
-        // Audios natifs HTML5 (recherche les fichiers du dossier)
+        // Audios natifs HTML5
         const a1 = new Audio('audio1.mp3'); const a2 = new Audio('audio2.mp3');
         const s_bip = new Audio('bip.wav'); const s_err = new Audio('erreur.wav'); const s_tic = new Audio('tic_tac.wav'); s_tic.loop = true;
 
